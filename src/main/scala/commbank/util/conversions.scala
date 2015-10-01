@@ -33,7 +33,7 @@ object AlgebirdToScalaz {
     def point[A](a: => A) = am.apply(a)
   }
 
-  implicit def algebirdMonoidToScalazMonoid[M](am: AMonoid[M]): SMonoid[M] = new SMonoid[M] {
+  implicit def algebirdMonoidToScalazMonoid[M](implicit am: AMonoid[M]): SMonoid[M] = new SMonoid[M] {
     override def zero: M = am.zero
     override def append(f1: M, f2: => M): M = am.plus(f1, f2)
   }
@@ -59,7 +59,7 @@ object ScalazToAlgebird {
   }
 
 
-  implicit def scalazMonoidToAlgebirdMonoid[M](sm: SMonoid[M]): AMonoid[M] = new AMonoid[M] {
+  implicit def scalazMonoidToAlgebirdMonoid[M](implicit sm: SMonoid[M]): AMonoid[M] = new AMonoid[M] {
     def zero = sm.zero
     def plus(l: M, r: M) = sm.append(l, r)
   }
