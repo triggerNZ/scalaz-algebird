@@ -1,5 +1,7 @@
 # scalaz-algebird
 
+[![Join the chat at https://gitter.im/triggerNZ/scalaz-algebird](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/triggerNZ/scalaz-algebird?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Conversions between the (isomporphic) category theory typeclasses of scalaz and algebird.
 
 ## Links
