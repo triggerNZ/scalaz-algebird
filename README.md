@@ -1,6 +1,6 @@
 # scalaz-algebird
 
-Conversions between the (isomporphic) category theory structures of scalaz and algebird.
+Conversions between the (isomporphic) category theory typeclasses of scalaz and algebird.
 
 ## Links
 
