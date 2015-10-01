@@ -32,3 +32,5 @@ Max(10) |+| Max(30)
 
 Vice-versa we use the `ScalazToAlgebird` object instead.
 
+### Pull requests welcome!!!
+
