@@ -7,6 +7,7 @@ object ConversionsSpec extends Specification {
     s2"""
        Conversion from algebird to scalaz
          Monoids  $a2sMonoid
+         Functors $a2sFunctor
 
        Conversion from scalaz to algebird
          Monoids  $s2aMonoid
@@ -47,5 +48,16 @@ object ConversionsSpec extends Specification {
     )
   }
 
+  def a2sFunctor = {
+    import com.twitter.algebird.{Functor => AFunctor}
+    import scalaz.{Functor => SFunctor}
+    import AlgebirdToScalaz._
 
+    val listAFunctor = new AFunctor[List] {
+      override def map[T, U](m: List[T])(fn: (T) => U): List[U] = m.map(fn)
+    }
+    val listSFunctor = implicitly[SFunctor[List]]
+
+    listSFunctor(List(1, 2, 3))(_ * 2) must_=== List(2, 4, 6)
+  }
 }
