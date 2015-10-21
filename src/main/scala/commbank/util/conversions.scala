@@ -4,17 +4,23 @@ import com.twitter.algebird.{
   Functor => AFunctor,
   Applicative => AApplicative,
   Monad => AMonad,
-  Monoid => AMonoid
+  Monoid => AMonoid,
+  Semigroup => ASemigroup
 }
 
 import scalaz.{
   Functor => SFunctor,
   Applicative => SApplicative,
   Monad => SMonad,
-  Monoid => SMonoid
+  Monoid => SMonoid,
+  Semigroup => SSemigroup
 }
 
 object AlgebirdToScalaz {
+  implicit def algebirdSemigroupToScalazSemigroup[S](implicit as: ASemigroup[S]): SSemigroup[S] = new SSemigroup[S] {
+    def append(s1: S, s2: => S) : S = as.plus(s1, s2)
+  }
+
   implicit def algebirdFunctorToScalazFunctor[F[_]](implicit af: AFunctor[F]) = new SFunctor[F] {
     override def map[A, B](fa: F[A])(f: (A) => B): F[B] = af.map(fa)(f)
   }
@@ -33,13 +39,17 @@ object AlgebirdToScalaz {
     def point[A](a: => A) = am.apply(a)
   }
 
-  implicit def algebirdMonoidToScalazMonoid[M](implicit am: AMonoid[M]): SMonoid[M] = new SMonoid[M] {
+  implicit def algebirdMonoidToScalazMonoid[M](implicit am: AMonoid[M], ss: SSemigroup[M]): SMonoid[M] = new SMonoid[M] {
     override def zero: M = am.zero
-    override def append(f1: M, f2: => M): M = am.plus(f1, f2)
+    override def append(f1: M, f2: => M): M = ss.append(f1, f2)
   }
 }
 
 object ScalazToAlgebird {
+  implicit def scalazSemigroupToAlgebirdSemigroup[S](implicit ss: SSemigroup[S]): ASemigroup[S] = new ASemigroup[S] {
+    def plus(l: S, r: S) = ss.append(l, r)
+  }
+
   implicit def scalazFunctorToAlgebirdFunctor[F[_]](implicit sf: SFunctor[F]) = new AFunctor[F] {
     override def map[T, U](m: F[T])(fn: (T) => U): F[U] = sf.map(m)(fn)
   }
@@ -59,9 +69,9 @@ object ScalazToAlgebird {
   }
 
 
-  implicit def scalazMonoidToAlgebirdMonoid[M](implicit sm: SMonoid[M]): AMonoid[M] = new AMonoid[M] {
+  implicit def scalazMonoidToAlgebirdMonoid[M](implicit sm: SMonoid[M], as: ASemigroup[M]): AMonoid[M] = new AMonoid[M] {
     def zero = sm.zero
-    def plus(l: M, r: M) = sm.append(l, r)
+    def plus(l: M, r: M) = as.plus(l, r)
   }
 
 }
